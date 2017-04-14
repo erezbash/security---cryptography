@@ -54,8 +54,7 @@ public class Test_Encrypt extends TestCase {
 	public void testEncrypt() {
 		System.out.println("testEncrypt-------------------------------------");
 		Encrypt myEncrypt = new Encrypt(input,"tyueawtmtq","dhagcfbe");
-		compareText(myEncrypt.getChiper(),output);
-		assertEquals(true, true);
+		assertEquals(compareText(myEncrypt.getChiper(),output), true);
 		System.out.println("");
 	}
 	@Test
@@ -64,16 +63,19 @@ public class Test_Encrypt extends TestCase {
 		System.out.println("testDecrypt-------------------------------------");
 		Encrypt myEncrypt = new Encrypt(input,"tyueawtmtq","dhagcfbe");
 		compareText(input,myEncrypt.decrypt());
-		assertEquals(true, true);
+		assertEquals(compareText(myEncrypt.getChiper(),output), true);
 	}
-	public void compareText(String a,String b){
+	public boolean compareText(String a,String b){
+		boolean bool=true;
 		int k=a.length();
 		for(int i=0;i<k;i=i+1){
 			if(a.charAt(i)==b.charAt(i))
 				System.out.println((int)(b.charAt(i))+" :ok");
 			else{
+				bool=false;
 				System.err.println("A:"+(int)(a.charAt(i))+" B:"+(int)(b.charAt(i)));
 			}
 		}
+		return bool;
 	}
 }
