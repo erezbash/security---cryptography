@@ -13,17 +13,43 @@ public class Encrypt {
 	
 	public Encrypt(String plaintText,String initVector,String Key){
 		this.plaintText = plaintText.toCharArray();
-		int x;
-		if(this.plaintText.length%10!=0)
-			x=(this.plaintText.length/10)*10+10;
-		else
-			x=this.plaintText.length;
-		cipherText = new char[x];
 		this.initVector = initVector.toCharArray();
 		this.Key = Key;
-		myTable = new table();
-		myTable.setKey(this.Key);
-		run();
+		padding();
+		myTable = new table(this.Key);
+		encrypt();
+	}
+	private void padding(){
+		if(plaintText.length%10!=0)
+			cipherText = new char[(plaintText.length/10)*10+10];
+		else
+			cipherText = new char[plaintText.length];
+	}
+	
+
+	public void encrypt(){
+		int startIndex=0;
+		char[] chiperTextBlock;
+		char[] plaintTextBlocks =  new char[10];
+		System.arraycopy(plaintText,startIndex,plaintTextBlocks,0,BLOCKSIZE);
+		chiperTextBlock = helperEync(plaintTextBlocks,initVector);
+		System.arraycopy(chiperTextBlock,0,cipherText,startIndex,BLOCKSIZE);
+		startIndex=startIndex+10;
+		while((startIndex+10)<=plaintText.length){
+			System.arraycopy(plaintText,startIndex,plaintTextBlocks,0,BLOCKSIZE);
+			chiperTextBlock = helperEync(plaintTextBlocks,chiperTextBlock);
+			System.arraycopy(chiperTextBlock,0,cipherText,startIndex,BLOCKSIZE);
+			startIndex=startIndex+10;
+		}
+		if(startIndex<plaintText.length){
+			System.arraycopy(plaintText,startIndex,plaintTextBlocks,0,plaintText.length-startIndex);
+			for(int i=plaintText.length-startIndex;i<BLOCKSIZE;i++){
+				plaintTextBlocks[i]=0;
+			}
+			chiperTextBlock = helperEync(plaintTextBlocks,chiperTextBlock);
+			System.arraycopy(chiperTextBlock,0,cipherText,startIndex,BLOCKSIZE);
+		}
+		
 	}
 	public String decrypt(){
 		decryptText = new char[cipherText.length];
@@ -45,65 +71,22 @@ public class Encrypt {
 		}
 		return new String(decryptText);
 	}
-	public void run(){
-		
-		int startIndex=0;
-		char[] chiperTextBlock;
-		char[] plaintTextBlocks =  new char[10];
-		System.arraycopy(plaintText,startIndex,plaintTextBlocks,0,BLOCKSIZE);
-		chiperTextBlock = helper(plaintTextBlocks,initVector);
-		System.arraycopy(chiperTextBlock,0,cipherText,startIndex,BLOCKSIZE);
-		startIndex=startIndex+10;
-		while((startIndex+10)<=plaintText.length){
-			System.arraycopy(plaintText,startIndex,plaintTextBlocks,0,BLOCKSIZE);
-			chiperTextBlock = helper(plaintTextBlocks,chiperTextBlock);
-			System.arraycopy(chiperTextBlock,0,cipherText,startIndex,BLOCKSIZE);
-			startIndex=startIndex+10;
-		}
-		if(startIndex<plaintText.length){
-			System.arraycopy(plaintText,startIndex,plaintTextBlocks,0,plaintText.length-startIndex);
-
-			for(int i=plaintText.length-startIndex;i<BLOCKSIZE;i++){
-				plaintTextBlocks[i]=0;
-			}
-			chiperTextBlock = helper(plaintTextBlocks,chiperTextBlock);
-			System.arraycopy(chiperTextBlock,0,cipherText,startIndex,BLOCKSIZE);
-		}
-		
+	private char[] helperEync(char[] first,char[] second){		
+		return myTable.replaceAll(xor(first,second));
 	}
-	public char[] helper(char[] first,char[] second){
-		
-		char[] chiperTextBlock = new char[BLOCKSIZE];
-		for(int i=0;i<chiperTextBlock.length;i++){
-//			if((int)first[i]==10){
-//				System.out.println("first: "+i);
-//				System.out.println("second: "+(int)second[i]);
-//				System.out.println((int) (first[i] ^ second[i]));
-//			}
-			chiperTextBlock[i] = (char) (first[i] ^ second[i]);
-		}
-//		System.out.println("---------------");
-//		System.out.println(new String(first));
-//		System.out.println(new String(second));
-//		System.out.println(new String(myTable.replaceAll(chiperTextBlock)));
-		
-		return myTable.replaceAll(chiperTextBlock);
-		
-	}
-	public char[] helperDyc(char[] first,char[] second){
+	private char[] helperDyc(char[] first,char[] second){
 		first = myTable.replaceAll(first);
-		char[] plainTextBlock = new char[BLOCKSIZE];
-		for(int i=0;i<plainTextBlock.length;i++){
-			plainTextBlock[i] = (char) (first[i] ^ second[i]);
+		return xor(first,second);
+	}
+	private char[] xor(char[] first,char[] second){
+		char[] result = new char[BLOCKSIZE];
+		for(int i=0;i<result.length;i++){
+			result[i] = (char) (first[i] ^ second[i]);
 		}
-		return plainTextBlock;
-		
+		return result;
 	}
 	public String getChiper() {
 		// TODO Auto-generated method stub
 		return new String(cipherText);
 	}
-	
-	
-	
 }

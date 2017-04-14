@@ -3,7 +3,9 @@ package security;
 
 public class table {
 	private char key[] = {'a','b','c','d','e','f','g','h'};
-	
+	public table(String key){
+		setKey(key);
+	}
 	public void setKey(String key){
 		if(key.length()>7){
 			for(int i=0;i<8;i++)

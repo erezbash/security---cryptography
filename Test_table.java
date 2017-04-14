@@ -8,11 +8,11 @@ import junit.framework.TestCase;
 
 public class Test_table extends TestCase {
 	
-	private table myTable1 = new table();
+	private table myTable1;
 	
 	protected void setUp() throws Exception {
-		myTable1 = new table();
-		myTable1.setKey("abcdhgef");
+		myTable1 = new table("abcdhgef");
+		
 	}
 	@Test
 	public void test1() {

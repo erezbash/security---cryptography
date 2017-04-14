@@ -18,9 +18,9 @@ public class Test_Encrypt extends TestCase {
 	String input="";
 	BufferedReader brOut = null;
 	FileReader frOut = null;
-	String Out="";
+	String output="";
 	
-	protected void setUp() throws Exception {
+	protected void setUp() throws Exception {//read plainText & chiperText
 		super.setUp();
 		try {
 			frInput = new FileReader(FILENAME);
@@ -42,8 +42,8 @@ public class Test_Encrypt extends TestCase {
 			String sCurrentLine1;
 			brInput = new BufferedReader(new FileReader(FILENAME));
 			while ((sCurrentLine1 = brOut.readLine()) != null) {
-				Out = Out + sCurrentLine1;
-				Out = Out + "\n";
+				output = output + sCurrentLine1;
+				output = output + "\n";
 			}
 		} 
 		catch (IOException e) {
@@ -51,18 +51,29 @@ public class Test_Encrypt extends TestCase {
 		}
 	}
 	@Test
-	public void test() {
+	public void testEncrypt() {
+		System.out.println("testEncrypt-------------------------------------");
 		Encrypt myEncrypt = new Encrypt(input,"tyueawtmtq","dhagcfbe");
-//		int k=myEncrypt.getChiper().length();
-//		for(int i=0;i<k;i=i+1){
-//			if(myEncrypt.getChiper().charAt(i)==Out.charAt(i))
-//				System.out.print("");
-//			else{
-//				System.out.println(myEncrypt.getChiper().charAt(i));
-//				System.out.println(Out.charAt(i));
-//			}
-//		}
-		System.out.println(myEncrypt.decrypt());
+		compareText(myEncrypt.getChiper(),output);
 		assertEquals(true, true);
+		System.out.println("");
+	}
+	@Test
+	public void testDecrypt() {
+		System.out.println("");
+		System.out.println("testDecrypt-------------------------------------");
+		Encrypt myEncrypt = new Encrypt(input,"tyueawtmtq","dhagcfbe");
+		compareText(input,myEncrypt.decrypt());
+		assertEquals(true, true);
+	}
+	public void compareText(String a,String b){
+		int k=a.length();
+		for(int i=0;i<k;i=i+1){
+			if(a.charAt(i)==b.charAt(i))
+				System.out.println((int)(b.charAt(i))+" :ok");
+			else{
+				System.err.println("A:"+(int)(a.charAt(i))+" B:"+(int)(b.charAt(i)));
+			}
+		}
 	}
 }
