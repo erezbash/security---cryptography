@@ -50,30 +50,35 @@ public class Test_Encrypt extends TestCase {
 			e.printStackTrace();
 		}
 	}
-	@Test
-	public void testEncrypt() {
-		System.out.println("testEncrypt-------------------------------------");
-		Encrypt myEncrypt = new Encrypt(input,"tyueawtmtq","dhagcfbe");
-		assertEquals(compareText(myEncrypt.getChiper(),output), true);
-		System.out.println("");
-	}
+//	@Test
+//	public void testEncrypt() {
+//		//System.out.println("testEncrypt-------------------------------------");
+//		Encrypt myEncrypt = new Encrypt(input,"tyueawtmtq","dhagcfbe");
+//		//System.out.println(myEncrypt.getChiper());
+//		assertEquals(compareText(output,myEncrypt.getChiper()), true);
+//		//System.out.println("");
+//	}
 	@Test
 	public void testDecrypt() {
-		System.out.println("");
-		System.out.println("testDecrypt-------------------------------------");
 		Encrypt myEncrypt = new Encrypt(input,"tyueawtmtq","dhagcfbe");
-		compareText(input,myEncrypt.decrypt());
-		assertEquals(compareText(myEncrypt.getChiper(),output), true);
+		//System.out.println(myEncrypt.getChiper());
+		//System.out.println("");
+		//System.out.println("testDecrypt-------------------------------------");
+		//compareText(input,myEncrypt.decrypt());
+		//System.out.println(myEncrypt.decrypt());
+		assertEquals(compareText(myEncrypt.decrypt(),input), true);
 	}
 	public boolean compareText(String a,String b){
+		System.out.println("a:"+a.length()+" b:"+b.length());
 		boolean bool=true;
-		int k=a.length();
+		int k=b.length();
 		for(int i=0;i<k;i=i+1){
 			if(a.charAt(i)==b.charAt(i))
-				System.out.println((int)(b.charAt(i))+" :ok");
+				//System.out.println((int)(b.charAt(i))+" :ok"+" i="+i);
+				continue;
 			else{
 				bool=false;
-				System.err.println("A:"+(int)(a.charAt(i))+" B:"+(int)(b.charAt(i)));
+				//System.out.println("XXXXXXXXXX);
 			}
 		}
 		return bool;

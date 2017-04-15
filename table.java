@@ -2,28 +2,31 @@ package security;
 
 
 public class table {
-	private char key[] = {'a','b','c','d','e','f','g','h'};
+	private int[] key;
 	public table(String key){
+		this.key = new int[8];
 		setKey(key);
 	}
 	public void setKey(String key){
 		if(key.length()>7){
 			for(int i=0;i<8;i++)
-				this.key[i]=key.charAt(i);
+				this.key[i]=(int)key.charAt(i);
 		}
 	}
-	char[] replaceAll(char[] text){
+	int[] replaceAll(int[] text){
+		int[] temp= new int[text.length];
 		for(int i=0;i<text.length;i++)
-			text[i]=replace(text[i]);
-		return text;
+			temp[i]=replace(text[i]);
+		return temp;
 	}
-	char[] replaceRevAll(char[] text){
+	int[] replaceRevAll(int[] text){
+		int[] temp= new int[text.length];
 		for(int i=0;i<text.length;i++)
-			text[i]=replaceRev(text[i]);
-		return text;
+			temp[i]=replaceRev(text[i]);
+		return temp;
 	}
-	char replace(char c){
-		 switch (c) {
+	int replace(int c){
+		 switch ((char)c) {
 	     case 'a': return key[0] ;
 	     case 'b': return key[1] ;
 	     case 'c': return key[2] ;
@@ -35,15 +38,15 @@ public class table {
 	     default: return c;         
 		 }
 	 }
-	char replaceRev(char c){
-	     if(c==key[0]) return 'a';
-	     else if(c==key[1]) return 'b';
-	     else if(c==key[2]) return 'c';
-	     else if(c==key[3]) return 'd';
-	     else if(c==key[4]) return 'e';
-	     else if(c==key[5]) return 'f';
-	     else if(c==key[6]) return 'g';
-	     else if(c==key[7]) return 'h';
+	int replaceRev(int c){
+	          if(c==key[0]) return (int)'a';
+	     else if(c==key[1]) return (int)'b';
+	     else if(c==key[2]) return (int)'c';
+	     else if(c==key[3]) return (int)'d';
+	     else if(c==key[4]) return (int)'e';
+	     else if(c==key[5]) return (int)'f';
+	     else if(c==key[6]) return (int)'g';
+	     else if(c==key[7]) return (int)'h';
 	     else
 	    	 return c;
 	 }
