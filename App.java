@@ -19,19 +19,18 @@ public class App {
 //		System.out.println(args[11]);
 		
 		Printer myPrinter = new Printer();
-		System.out.println("Text:");
-		System.out.println(myPrinter.readFile(args[5]));
-		System.out.println("\nKey:");
-		System.out.println(myPrinter.readKey(args[7]));
-		System.out.println("\nIV:");
-		System.out.println(myPrinter.readFile(args[9]));
+		String text=myPrinter.readFile(args[5]);
+		String key=myPrinter.readKey(args[7]);
+		String iv=myPrinter.readFile(args[9]);
+		String output=args[11];
 		if(args[3].equals("encryption")){
-			System.out.println("\nencryption");
-			
+			CBC myCBC =  new CBC();
+			myPrinter.writeToFile(output, myCBC.encrypt(text, iv, key));
 		}
 		else if(args[3].equals("decryption")){
-			System.out.println("\ndecryption");
-		}
+			CBC myCBC =  new CBC();
+			myPrinter.writeToFile(output, myCBC.decrypt(text, iv, key));
+		}	
 		
 	
 	}

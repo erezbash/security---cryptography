@@ -1,6 +1,5 @@
 package security;
 
-import static org.junit.Assert.*;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -12,14 +11,9 @@ import junit.framework.TestCase;
 
 public class Test_Encrypt extends TestCase {
 	String FILENAME = "C:\\Users\\erez\\security\\plainMsg_example.txt";
-	String FILENAME2 = "C:\\Users\\erez\\security\\cipherMsg_example.txt";
 	BufferedReader brInput = null;
 	FileReader frInput = null;
-	String coursePlaintText="";
-	BufferedReader brOut = null;
-	FileReader frOut = null;
-	String courseChiperText="";
-	
+	String coursePlaintText="";	
 	protected void setUp() throws Exception {//read plainText & chiperText
 		super.setUp();
 		try {
@@ -35,33 +29,14 @@ public class Test_Encrypt extends TestCase {
 		catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-		try {
-			frOut = new FileReader(FILENAME2);
-			brOut = new BufferedReader(frOut);
-			String sCurrentLine1;
-			brInput = new BufferedReader(new FileReader(FILENAME));
-			while ((sCurrentLine1 = brOut.readLine()) != null) {
-				courseChiperText = courseChiperText + sCurrentLine1;
-				courseChiperText = courseChiperText + "\n";
-			}
-		} 
-		catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	@Test
-	public void testEncrypt() {
-		Encrypt myEncrypt = new Encrypt(coursePlaintText,"tyueawtmtq","dhagcfbe");
-		assertEquals(compareText(courseChiperText,myEncrypt.getChiper()), true);
-	}
-	@Test
-	public void testDecrypt() {
-		Encrypt myEncrypt = new Encrypt(coursePlaintText,"tyueawtmtq","dhagcfbe");
-		myEncrypt.decrypt();
-		assertEquals(compareText(myEncrypt.getDycText(),coursePlaintText), true);
 	}
 	
+	@Test
+	public void testDecrypt() {
+		CBC myEncrypt = new CBC();
+		String a=myEncrypt.decrypt(myEncrypt.encrypt(coursePlaintText,"tyueawtmtq","dhagcfbe"),"tyueawtmtq","dhagcfbe");
+		assertEquals(compareText(a,coursePlaintText), true);
+	}
 	
 	
 	public boolean compareText(String a,String b){

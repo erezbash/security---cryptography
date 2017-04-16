@@ -3,6 +3,7 @@ package security;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 public class Printer {
 
@@ -45,5 +46,15 @@ public class Printer {
 			e.printStackTrace();
 		}
 		return input;
+	}
+	public void writeToFile(String outputFILENAME,String text) {
+		try{
+		    PrintWriter writer = new PrintWriter(outputFILENAME, "UTF-8");
+		    writer.print(text);
+		    writer.close();
+		} catch (IOException e) {
+		   // do something
+		}
+		
 	}
 }
