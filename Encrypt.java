@@ -1,7 +1,5 @@
 package security;
 import java.util.Arrays;
-
-
 public class Encrypt {
 	
 	private final int BLOCKSIZE=10;
@@ -43,7 +41,6 @@ public class Encrypt {
 			}
 		}
 	}
-	
 	public void encrypt(){
 		int startIndex=0;
 		int[] chiperTextBlock;
@@ -72,7 +69,7 @@ public class Encrypt {
 		}
 		
 	}
-	public String decrypt(){
+	public void decrypt(){
 		decryptText = new int[cipherText.length];
 		int startIndex=0;
 		int[] toDecrypt=cipherText;
@@ -97,7 +94,6 @@ public class Encrypt {
 			startIndex=startIndex+10;
 		}
 
-		return func(decryptText);
 	}
 	private int[] helperEync(int[] first,int[] second){		
 		return myTable.replaceAll(xor(first,second));
@@ -114,9 +110,13 @@ public class Encrypt {
 	}
 	public String getChiper() {
 		// TODO Auto-generated method stub
-		return func(cipherText);
+		return intToChar(cipherText);
 	}
-	public String func(int[] text){
+	public String getDycText() {
+		// TODO Auto-generated method stub
+		return intToChar(decryptText);
+	}
+	public String intToChar(int[] text){
 		char[] chiperToReturn = new char[text.length];
 		for(int i=0;i<text.length;i++)
 			chiperToReturn[i]=(char)text[i];
