@@ -29,7 +29,7 @@ public class Printer {
 		return input;
 	}
 
-	public String readKey(String inputFILENAME) {
+	public String readKey(String inputFILENAME) {//fix
 		BufferedReader brinput = null;
 		FileReader frinput = null;
 		String input="";
