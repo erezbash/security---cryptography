@@ -2,30 +2,30 @@ package security;
 
 
 public class table {
-	private int[] key;
-	public table(String key){
-		this.key = new int[8];
+	private byte[] key;
+	public table(byte[] key){
+		this.key = new byte[8];
 		setKey(key);
 	}
-	public void setKey(String key){
-		if(key.length()>7){
+	public void setKey(byte[] key){
+		if(key.length>7){
 			for(int i=0;i<8;i++)
-				this.key[i]=(int)key.charAt(i);
+				this.key[i]=key[i];
 		}
 	}
-	int[] replaceAll(int[] text){
-		int[] temp= new int[text.length];
+	byte[] replaceAll(byte[] text){
+		byte[] temp= new byte[text.length];
 		for(int i=0;i<text.length;i++)
 			temp[i]=replace(text[i]);
 		return temp;
 	}
-	int[] replaceRevAll(int[] text){
-		int[] temp= new int[text.length];
+	byte[] replaceRevAll(byte[] text){
+		byte[] temp= new byte[text.length];
 		for(int i=0;i<text.length;i++)
 			temp[i]=replaceRev(text[i]);
 		return temp;
 	}
-	int replace(int c){
+	byte replace(byte c){
 		 switch ((char)c) {
 	     case 'a': return key[0] ;
 	     case 'b': return key[1] ;
@@ -38,7 +38,7 @@ public class table {
 	     default: return c;         
 		 }
 	 }
-	int replaceRev(int c){
+	byte replaceRev(byte c){
 	          if(c==key[0]) return (int)'a';
 	     else if(c==key[1]) return (int)'b';
 	     else if(c==key[2]) return (int)'c';

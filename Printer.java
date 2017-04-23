@@ -4,6 +4,9 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.Path;
 
 public class Printer {
 
@@ -28,8 +31,17 @@ public class Printer {
 		}
 		return input;
 	}
-
-	public String readKey(String inputFILENAME) {//fix
+	public byte[] read(String fileName) throws IOException{
+		Path path = Paths.get(fileName);
+		byte[] data = Files.readAllBytes(path);
+		return data;
+	}
+	public byte[] readKeyByte(String fileName) throws IOException{
+		Path path = Paths.get(fileName);
+		byte[] data = Files.readAllBytes(path);
+		return data;
+	}
+	public String readKey(String inputFILENAME) {
 		BufferedReader brinput = null;
 		FileReader frinput = null;
 		String input="";

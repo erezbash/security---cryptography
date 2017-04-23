@@ -1,23 +1,23 @@
 package security;
-import java.util.Arrays;
+import java.nio.charset.Charset;
 public class CBC {
 	
 	private final int BLOCKSIZE=10;
-	private int[] initVector;
-	private int[] plaintText;
-	private String Key;
-	private int[] cipherText;
-	private int[] decryptText;
+	private byte[] initVector;
+	private byte[] plaintText;
+	private byte[] Key;
+	private byte[] cipherText;
+	private byte[] decryptText;
 	private table myTable;
 	
 	public CBC(){}
 	
-	public String encrypt(String text,String iv,String k){
+	public String encrypt(byte[] text,String iv,String k){
 		encryptInit(text,iv,k);
 		myTable = new table(Key);
 		int startIndex=0;
-		int[] chiperTextBlock;
-		int[] plaintTextBlocks =  new int[10];
+		byte[] chiperTextBlock;
+		byte[] plaintTextBlocks =  new byte[10];
 		System.arraycopy(this.plaintText,startIndex,plaintTextBlocks,0,BLOCKSIZE);
 		chiperTextBlock = helperEync(plaintTextBlocks,initVector);
 		System.arraycopy(chiperTextBlock,0,cipherText,startIndex,BLOCKSIZE);
@@ -36,19 +36,20 @@ public class CBC {
 			chiperTextBlock = helperEync(plaintTextBlocks,chiperTextBlock);
 			System.arraycopy(chiperTextBlock,0,cipherText,startIndex,BLOCKSIZE);
 		}
-		return intToChar(cipherText);
+		return  new String(cipherText);
 	}
 
-	private void encryptInit(String a,String b,String c){
-		plaintText = charToInt(a);
-		initVector = charToInt(b);
-		Key = c;
+	private void encryptInit(byte[] a,String b,String c){
+		plaintText = a;
+		initVector = b.getBytes(Charset.forName("UTF-8"));
+		Key = c.getBytes(Charset.forName("UTF-8"));;
 		if(plaintText.length%10!=0)
-			cipherText = new int[(plaintText.length/10)*10+10];
+			cipherText = new byte[(plaintText.length/10)*10+10];
 		else
-			cipherText = new int[plaintText.length];
+			cipherText = new byte[plaintText.length];
 	}
 	
+
 	public void isSame(int[] a,int[] b){
 		int k=a.length;
 		for(int i=0;i<k;i=i+1){
@@ -61,16 +62,16 @@ public class CBC {
 		}
 	}
 	
-	public String decrypt(String chiper,String iv,String k){
-		decryptText = new int[chiper.length()];
-		initVector = charToInt(iv);
-		Key=k;
+	public String decrypt(byte[] chiper,String iv,String k){
+		decryptText = new byte[chiper.length];
+		initVector = iv.getBytes(Charset.forName("UTF-8"));
+		Key=k.getBytes(Charset.forName("UTF-8"));;
 		myTable = new table(Key);
 		int startIndex=0;
-		int[] toDecrypt=charToInt(chiper);
-		int[] chiperTextBlock0 = new int[10];
-		int[] chiperTextBlock1 = new int[10];
-		int[] plaintTextBlocks =  new int[10];
+		byte[] toDecrypt=chiper;
+		byte[] chiperTextBlock0 = new byte[10];
+		byte[] chiperTextBlock1 = new byte[10];
+		byte[] plaintTextBlocks =  new byte[10];
 		System.arraycopy(toDecrypt,startIndex,chiperTextBlock0,0,BLOCKSIZE);
 		plaintTextBlocks = helperDyc(chiperTextBlock0,initVector);
 		System.arraycopy(plaintTextBlocks,0,decryptText,startIndex,BLOCKSIZE);
@@ -82,27 +83,22 @@ public class CBC {
 			System.arraycopy(plaintTextBlocks,0,decryptText,startIndex,BLOCKSIZE);
 			startIndex=startIndex+10;
 		}
-		return intToChar(decryptText);
+		return  new String(decryptText);
 	}
-	private int[] helperEync(int[] first,int[] second){		
+	private byte[] helperEync(byte[] first,byte[] second){		
 		return myTable.replaceAll(xor(first,second));
 	}
-	private int[] helperDyc(int[] first,int[] second){
+	private byte[] helperDyc(byte[] first,byte[] second){
 		return xor(myTable.replaceRevAll(first),second);
 	}
-	private int[] xor(int[] first,int[] second){
-		int[] result = new int[first.length];
+	private byte[] xor(byte[] first,byte[] second){
+		byte[] result = new byte[first.length];
 		for(int i=0;i<first.length;i++){
-			result[i] = first[i] ^ second[i];
+			result[i]=(byte) (first[i] ^ second[i]);
 		}
 		return result;
 	}
-	private String intToChar(int[] text){
-		char[] chiperToReturn = new char[text.length];
-		for(int i=0;i<text.length;i++)
-			chiperToReturn[i]=(char)text[i];
-		return new String(chiperToReturn);
-	}
+
 	public int[] charToInt(String a){
 		int[] toReturn = new int[a.length()];
 		for (int i = 0; i < a.length(); i++){

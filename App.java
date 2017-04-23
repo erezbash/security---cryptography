@@ -1,7 +1,10 @@
 package security;
+
+import java.io.IOException;
+
 public class App {
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		if(args.length!=12){
 			return;
 		}
@@ -19,7 +22,7 @@ public class App {
 //		System.out.println(args[11]);
 		
 		Printer myPrinter = new Printer();
-		String text=myPrinter.readFile(args[5]);
+		byte[] text=myPrinter.read(args[5]);
 		String key=myPrinter.readKey(args[7]);
 		String iv=myPrinter.readFile(args[9]);
 		String output=args[11];
