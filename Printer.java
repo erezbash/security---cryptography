@@ -11,36 +11,17 @@ import java.nio.file.Path;
 public class Printer {
 
 	
-	public String readFile(String inputFILENAME){
-		BufferedReader brinput = null;
-		FileReader frinput = null;
-		String input="";
-		try {
-			frinput = new FileReader(inputFILENAME);
-			brinput = new BufferedReader(frinput);
-			String sCurrentLine;
-			brinput = new BufferedReader(new FileReader(inputFILENAME));
-			while ((sCurrentLine = brinput.readLine()) != null) {
-				input = input + sCurrentLine;
-				input = input + "\n";
-			}
-			input=input.substring(0, input.length()-1);
-		} 
-		catch (IOException e) {
-			e.printStackTrace();
-		}
-		return input;
+	public String readFile(String inputFILENAME) throws IOException{
+
+		return new String(read(inputFILENAME));
 	}
 	public byte[] read(String fileName) throws IOException{
 		Path path = Paths.get(fileName);
 		byte[] data = Files.readAllBytes(path);
 		return data;
 	}
-	public byte[] readKeyByte(String fileName) throws IOException{
-		Path path = Paths.get(fileName);
-		byte[] data = Files.readAllBytes(path);
-		return data;
-	}
+
+	@SuppressWarnings("resource")
 	public String readKey(String inputFILENAME) {
 		BufferedReader brinput = null;
 		FileReader frinput = null;
