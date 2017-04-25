@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.security.Key;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
 import java.util.stream.Stream;
@@ -24,7 +25,9 @@ public class Attack {
 	CBC myCBC;
 	String bestKey="";
 	int best;
+	Printer p;
 	public Attack(){
+		p=new Printer();
 		keys = new ArrayList<String>();
 		
 	}
@@ -42,33 +45,22 @@ public class Attack {
     
 	public String crack(byte[] cipher,String iv) throws IOException{
 		long startTime = System.currentTimeMillis();
-		//myCBC = new CBC(10);
+		//myCBC = new CBC(10,p.readDic());
 		 best=0;
-		
+		int cur;
         int n = 8;
+        Set<String> dictionary=p.readDic();
         String alphabet = "abcdefgh";
         String elements = alphabet.substring(0, n);
         perm1(elements);
-        ForkJoinPool myPool = new ForkJoinPool(3);
-        try {
-			myPool.submit(() ->
-			keys.parallelStream().forEach(s->{
-				int c=0;
-				try {
-					c = (new CBC(10)).cipherTextAttack(cipher, iv,s);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				checkForMe(new Key(s,c));
-			})).get();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ExecutionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		keys.parallelStream().forEach(s->{
+			try {
+				checkForMe(new Key(s,(new CBC(10,dictionary)).cipherTextAttack(cipher, iv,s)));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			});
 //		for(String s: keys){
 //			if(System.currentTimeMillis()-startTime>=59*1000)
 //				break;

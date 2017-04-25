@@ -18,8 +18,8 @@ public class Test_CBC extends TestCase {
 	CBC myCBC;
 	
 	public void setUp() throws IOException {
-		myCBC = new CBC(10);
 		myPrinter= new Printer();
+		myCBC = new CBC(10,myPrinter.readDic());
 		plaintText= myPrinter.read(plaintTextName);
 		chiperText= myPrinter.read(chiperTextName);
 		key=myPrinter.readKey8(keyName);
