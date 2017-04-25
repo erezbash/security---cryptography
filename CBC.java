@@ -1,5 +1,8 @@
 package security;
+
+import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.Set;
 public class CBC {
 	
 	private final int BLOCKSIZE=10;
@@ -8,13 +11,19 @@ public class CBC {
 	private byte[] Key;
 	private byte[] cipherText;
 	private byte[] decryptText;
-	private table myTable;
-	
-	public CBC(){}
+	private Table myTable;
+	public String kkk;
+	int blockCrackSize;
+	Printer p ;
+	Set<String> dictionary; 
+	public CBC() throws IOException{
+		 p  = new Printer();
+		dictionary = p.readDic();
+	}
 	
 	public String encrypt(byte[] text,String iv,String k){
 		encryptInit(text,iv,k);
-		myTable = new table(Key);
+		myTable = new Table(Key);
 		int startIndex=0;
 		byte[] chiperTextBlock;
 		byte[] plaintTextBlocks =  new byte[10];
@@ -66,7 +75,7 @@ public class CBC {
 		decryptText = new byte[chiper.length];
 		initVector = iv.getBytes(Charset.forName("UTF-8"));
 		Key=k.getBytes(Charset.forName("UTF-8"));;
-		myTable = new table(Key);
+		myTable = new Table(Key);
 		int startIndex=0;
 		byte[] toDecrypt=chiper;
 		byte[] chiperTextBlock0 = new byte[10];
@@ -88,7 +97,7 @@ public class CBC {
 	private byte[] helperEync(byte[] first,byte[] second){		
 		return myTable.replaceAll(xor(first,second));
 	}
-	private byte[] helperDyc(byte[] first,byte[] second){
+	public byte[] helperDyc(byte[] first,byte[] second){
 		return xor(myTable.replaceRevAll(first),second);
 	}
 	private byte[] xor(byte[] first,byte[] second){
@@ -105,5 +114,51 @@ public class CBC {
 			toReturn[i] =(int)a.charAt(i);
 	    }
 		return toReturn;
+	}
+	public int cipherTextAttack(byte[] chiper,String iv,String k){
+
+		blockCrackSize=25000;
+		decryptText = new byte[chiper.length];
+		initVector = iv.getBytes(Charset.forName("UTF-8"));
+		Key=k.getBytes(Charset.forName("UTF-8"));;
+		myTable = new Table(Key);
+		int startIndex=0;
+		byte[] toDecrypt=chiper;
+		byte[] chiperTextBlock0 = new byte[BLOCKSIZE];
+		byte[] chiperTextBlock1 = new byte[BLOCKSIZE];
+		byte[] plaintTextBlocks =  new byte[BLOCKSIZE];
+		System.arraycopy(toDecrypt,startIndex,chiperTextBlock0,0,BLOCKSIZE);
+		plaintTextBlocks = helperDyc(chiperTextBlock0,initVector);
+		System.arraycopy(plaintTextBlocks,0,decryptText,startIndex,BLOCKSIZE);
+		startIndex=startIndex+10;
+		while((startIndex+10)<=toDecrypt.length){
+			System.arraycopy(chiperTextBlock0,0,chiperTextBlock1,0,BLOCKSIZE);
+			System.arraycopy(toDecrypt,startIndex,chiperTextBlock0,0,BLOCKSIZE);
+			plaintTextBlocks = helperDyc(chiperTextBlock0,chiperTextBlock1);
+			if(startIndex>=blockCrackSize){
+
+				return cehckIfNotCracked(decryptText);
+			}
+			System.arraycopy(plaintTextBlocks,0,decryptText,startIndex,BLOCKSIZE);
+			startIndex=startIndex+10;	
+		}
+
+		return cehckIfNotCracked(decryptText);
+	}
+	private int cehckIfNotCracked(byte[] partOfDecryptText) {
+		String text;
+		if(partOfDecryptText.length<blockCrackSize)
+			text = new String(partOfDecryptText);
+		else{
+			text=(new String(partOfDecryptText)).substring(0, blockCrackSize);
+		}
+		int goods=0;
+		String[] textWords=text.split("\\s+");
+		for(int i=0;i<textWords.length;i++){
+			if(dictionary.contains(textWords[i]))
+				goods++;
+		}
+
+		return goods;
 	}
 }

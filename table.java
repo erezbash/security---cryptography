@@ -1,22 +1,13 @@
 package security;
-
-
-public class table {
+public class Table {
 	private byte[] key;
-	public table(byte[] key){
-		this.key = new byte[8];
-		setKey(key);
-	}
-	public void setKey(byte[] key){
-		if(key.length>7){
-			for(int i=0;i<8;i++)
-				this.key[i]=key[i];
-		}
+	public Table(byte[] key){
+		this.key=key;
 	}
 	byte[] replaceAll(byte[] text){
 		byte[] temp= new byte[text.length];
 		for(int i=0;i<text.length;i++)
-			temp[i]=replace(text[i]);
+				temp[i]=replace(text[i]);
 		return temp;
 	}
 	byte[] replaceRevAll(byte[] text){
@@ -26,28 +17,40 @@ public class table {
 		return temp;
 	}
 	byte replace(byte c){
-		 switch ((char)c) {
-	     case 'a': return key[0] ;
-	     case 'b': return key[1] ;
-	     case 'c': return key[2] ;
-	     case 'd': return key[3] ;
-	     case 'e': return key[4] ;
-	     case 'f': return key[5] ;
-	     case 'g': return key[6] ;
-	     case 'h': return key[7] ;
-	     default: return c;         
-		 }
-	 }
+		int cur = (int)c;
+		if(!(cur>=65&&cur<=90 || cur>=97&&cur<=122))
+			return c;
+		//a-z = 97-122
+		//A-Z = 65-90
+		if(key.length==8){//8 chars
+			return (cur>104 || cur <97 ) ? c : key[cur-97];
+		}
+		else{ // 52 chars
+			if(cur>=97)
+				return key[cur-97];
+			return key[cur-65+26];
+		}
+	}
 	byte replaceRev(byte c){
-	          if(c==key[0]) return (int)'a';
-	     else if(c==key[1]) return (int)'b';
-	     else if(c==key[2]) return (int)'c';
-	     else if(c==key[3]) return (int)'d';
-	     else if(c==key[4]) return (int)'e';
-	     else if(c==key[5]) return (int)'f';
-	     else if(c==key[6]) return (int)'g';
-	     else if(c==key[7]) return (int)'h';
-	     else
-	    	 return c;
-	 }
+		int cur = (int)c;
+		if(!(cur>=65&&cur<=90 || cur>=97&&cur<=122))
+			return c;
+		if(key.length==8){
+			for(int i=0;i<8;i++){
+				if(c==key[i])
+					return (cur>104 || cur <97 ) ? c : (byte)(i+97);
+			}
+		}
+		else{
+			for(int i=0;i<52;i++){
+				if(c==key[i]){
+					if(i<=25)
+						return (byte)(i+97);
+					else 
+						return (byte)(i-26+65);
+				}
+			}
+		}
+		return c;
+	}
 }

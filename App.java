@@ -1,40 +1,46 @@
 package security;
-
 import java.io.IOException;
-
 public class App {
 	
 	public static void main(String[] args) throws IOException {
-		if(args.length!=12){
-			return;
+		if(args.length<10){
+			throw new IOException("Boom!");
 		}
-//		System.out.println(args[0]); //-a   algo
-//		System.out.println(args[1]);
-//		System.out.println(args[2]); //-c   action
-//		System.out.println(args[3]);
-//		System.out.println(args[4]); //-t
-//		System.out.println(args[5]);
-//		System.out.println(args[6]); //-k
-//		System.out.println(args[7]);
-//		System.out.println(args[8]); //-v
-//		System.out.println(args[9]);
-//		System.out.println(args[10]); //-o
-//		System.out.println(args[11]);
-		
+		CBC myCBC =  new CBC();
 		Printer myPrinter = new Printer();
 		byte[] text=myPrinter.read(args[5]);
-		String key=myPrinter.readKey(args[7]);
-		String iv=myPrinter.readFile(args[9]);
-		String output=args[11];
-		if(args[3].equals("encryption")){
-			CBC myCBC =  new CBC();
-			myPrinter.writeToFile(output, myCBC.encrypt(text, iv, key));
-		}
-		else if(args[3].equals("decryption")){
-			CBC myCBC =  new CBC();
-			myPrinter.writeToFile(output, myCBC.decrypt(text, iv, key));
-		}	
+		  switch (args[3]) {
+          case "encryption": {
+        	String key=myPrinter.readKey8(args[7]);
+      		String iv=myPrinter.readFile(args[9]);
+      		String output=args[11];
+      		myPrinter.writeToFile(output, myCBC.encrypt(text, iv, key));
+          }break;
+          case "decryption": {
+        	String key=myPrinter.readKey8(args[7]);
+      		String iv=myPrinter.readFile(args[9]);
+      		String output=args[11];
+      		myPrinter.writeToFile(output, myCBC.decrypt(text, iv, key));
+          }break;
+          case "attack": {
+      		String iv=myPrinter.readFile(args[7]);
+    		String output=args[9];	
+    		long startTime = System.nanoTime();
+    		Attack a = new Attack();
+    		String key=a.crack(text,iv);
+    		String outKey="";
+    		for(int i=0;i<key.length();i++){
+    			if(i==key.length()-1)
+    				outKey=outKey+(char)(i+97)+" "+key.charAt(i);
+    			else
+    			outKey=outKey+(char)(i+97)+" "+key.charAt(i)+"\n";
+    		}
+    	    myPrinter.writeToFile(output, outKey);
+    		long endTime = System.nanoTime();
+    		System.out.println("Took "+(endTime - startTime) + " ns");
+          }break;
+		  }
 		
-	
+		
 	}
 }
