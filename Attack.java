@@ -1,12 +1,29 @@
 package security;
 
 import java.io.IOException;
+import java.security.Key;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ForkJoinPool;
+import java.util.stream.Stream;
+
+import javax.swing.plaf.synth.SynthSpinnerUI;
 
 public class Attack {
+	class Key{
+		public String key;
+		public int cur;
+		public Key(String k,int c){
+			key=k;
+			cur=c;
+		}
+	}
+
 	List<String> keys;
 	CBC myCBC;
+	String bestKey="";
+	int best;
 	public Attack(){
 		keys = new ArrayList<String>();
 		
@@ -25,23 +42,50 @@ public class Attack {
     
 	public String crack(byte[] cipher,String iv) throws IOException{
 		long startTime = System.currentTimeMillis();
-		myCBC = new CBC();
-		int best=0;
-		int cur=0;
-		String bestKey="abcdefgh";
+		//myCBC = new CBC(10);
+		 best=0;
+		
         int n = 8;
         String alphabet = "abcdefgh";
         String elements = alphabet.substring(0, n);
         perm1(elements);
-		for(String s: keys){
-			if(System.currentTimeMillis()-startTime>=59*1000)
-				break;
-			cur=myCBC.cipherTextAttack(cipher, iv,s);
-			if(cur>best){
-				best=cur;
-				bestKey=s;
-			}
+        ForkJoinPool myPool = new ForkJoinPool(3);
+        try {
+			myPool.submit(() ->
+			keys.parallelStream().forEach(s->{
+				int c=0;
+				try {
+					c = (new CBC(10)).cipherTextAttack(cipher, iv,s);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				checkForMe(new Key(s,c));
+			})).get();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+//		for(String s: keys){
+//			if(System.currentTimeMillis()-startTime>=59*1000)
+//				break;
+//			cur=myCBC.cipherTextAttack(cipher, iv,s);
+//			if(cur>best){
+//				best=cur;
+//				bestKey=s;
+//			}
+//		}
 		return bestKey;
 	}
+	private void checkForMe(Key key) {
+		if(key.cur>best){
+			best=key.cur;
+			bestKey=key.key;
+		}
+	}
+	
 }
+

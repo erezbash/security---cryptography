@@ -5,7 +5,7 @@ import java.nio.charset.Charset;
 import java.util.Set;
 public class CBC {
 	
-	private final int BLOCKSIZE=10;
+	private int BLOCKSIZE=10;
 	private byte[] initVector;
 	private byte[] plaintText;
 	private byte[] Key;
@@ -16,7 +16,8 @@ public class CBC {
 	int blockCrackSize;
 	Printer p ;
 	Set<String> dictionary; 
-	public CBC() throws IOException{
+	public CBC(int blocksize) throws IOException{
+		 BLOCKSIZE=blocksize;
 		 p  = new Printer();
 		dictionary = p.readDic();
 	}
@@ -117,7 +118,7 @@ public class CBC {
 	}
 	public int cipherTextAttack(byte[] chiper,String iv,String k){
 
-		blockCrackSize=25000;
+		blockCrackSize=20000;
 		decryptText = new byte[chiper.length];
 		initVector = iv.getBytes(Charset.forName("UTF-8"));
 		Key=k.getBytes(Charset.forName("UTF-8"));;

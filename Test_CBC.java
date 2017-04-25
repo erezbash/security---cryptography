@@ -18,7 +18,7 @@ public class Test_CBC extends TestCase {
 	CBC myCBC;
 	
 	public void setUp() throws IOException {
-		myCBC = new CBC();
+		myCBC = new CBC(10);
 		myPrinter= new Printer();
 		plaintText= myPrinter.read(plaintTextName);
 		chiperText= myPrinter.read(chiperTextName);

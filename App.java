@@ -6,23 +6,26 @@ public class App {
 		if(args.length<10){
 			throw new IOException("Boom!");
 		}
-		CBC myCBC =  new CBC();
+		CBC myCBC;
 		Printer myPrinter = new Printer();
 		byte[] text=myPrinter.read(args[5]);
 		  switch (args[3]) {
           case "encryption": {
+        	  myCBC =  new CBC(10);
         	String key=myPrinter.readKey8(args[7]);
       		String iv=myPrinter.readFile(args[9]);
       		String output=args[11];
       		myPrinter.writeToFile(output, myCBC.encrypt(text, iv, key));
           }break;
           case "decryption": {
+        	  myCBC =  new CBC(10);
         	String key=myPrinter.readKey8(args[7]);
       		String iv=myPrinter.readFile(args[9]);
       		String output=args[11];
       		myPrinter.writeToFile(output, myCBC.decrypt(text, iv, key));
           }break;
           case "attack": {
+        	  myCBC =  new CBC(10);
       		String iv=myPrinter.readFile(args[7]);
     		String output=args[9];	
     		long startTime = System.nanoTime();
