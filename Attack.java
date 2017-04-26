@@ -1,16 +1,9 @@
 package security;
 
 import java.io.IOException;
-import java.security.Key;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ForkJoinPool;
-import java.util.stream.Stream;
-
-import javax.swing.plaf.synth.SynthSpinnerUI;
-
 public class Attack {
 	class Key{
 		public String key;
@@ -20,7 +13,6 @@ public class Attack {
 			cur=c;
 		}
 	}
-
 	List<String> keys;
 	CBC myCBC;
 	String bestKey="";
@@ -44,32 +36,20 @@ public class Attack {
     }
     
 	public String crack(byte[] cipher,String iv) throws IOException{
-		long startTime = System.currentTimeMillis();
-		//myCBC = new CBC(10,p.readDic());
 		 best=0;
-		int cur;
         int n = 8;
-        Set<String> dictionary=p.readDic();
+        Set<String> dictionary=p.readDictionary();
         String alphabet = "abcdefgh";
         String elements = alphabet.substring(0, n);
         perm1(elements);
 		keys.parallelStream().forEach(s->{
 			try {
-				checkForMe(new Key(s,(new CBC(10,dictionary)).cipherTextAttack(cipher, iv,s)));
+				checkForMe(new Key(s,(new CBC(dictionary)).cipherTextAttack(cipher, iv,s)));
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			});
-//		for(String s: keys){
-//			if(System.currentTimeMillis()-startTime>=59*1000)
-//				break;
-//			cur=myCBC.cipherTextAttack(cipher, iv,s);
-//			if(cur>best){
-//				best=cur;
-//				bestKey=s;
-//			}
-//		}
 		return bestKey;
 	}
 	private void checkForMe(Key key) {

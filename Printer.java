@@ -1,8 +1,4 @@
 package security;
-
-
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
@@ -13,18 +9,16 @@ import java.util.Set;
 import java.nio.file.Path;
 
 public class Printer {
-
 	
-	public String readFile(String inputFILENAME) throws IOException{
-
-		return new String(read(inputFILENAME));
+	public String fileToString(String inputFILENAME) throws IOException{
+		return new String(fileToBytes(inputFILENAME));
 	}
-	public byte[] read(String fileName) throws IOException{
+	public byte[] fileToBytes(String fileName) throws IOException{
 		Path path = Paths.get(fileName);
 		byte[] data = Files.readAllBytes(path);
 		return data;
 	}
-	public 	Set<String> readDic() throws IOException{
+	public 	Set<String> readDictionary() throws IOException{
 		Set<String> dictionary = new HashSet<String>(10000);
 		Path path = Paths.get("words.txt");
 		List<String> data = Files.readAllLines(path);
@@ -32,38 +26,41 @@ public class Printer {
 		dictionary.add(s.trim());
 		return dictionary;
 	}
-	@SuppressWarnings("resource")
-	public String readKey8(String inputFILENAME) {
-		BufferedReader brinput = null;
-		FileReader frinput = null;
-		char[] charKey =new char[8];
-		String input="";
-		try {
-			frinput = new FileReader(inputFILENAME);
-			brinput = new BufferedReader(frinput);
-			String sCurrentLine;
-			brinput = new BufferedReader(new FileReader(inputFILENAME));
-			while ((sCurrentLine = brinput.readLine()) != null) {
-				input = input + sCurrentLine+"\n";
-			}
-			String[] splitKey = input.split("\n");
-			for(int i=0;i<8;i++){
-				charKey[(int)(splitKey[i].charAt(0)-97)]=splitKey[i].charAt(2);
-			}
-		} 
-		catch (IOException e) {
-			e.printStackTrace();
+	public String readKey(String inputFILENAME) throws IOException {
+		Path path = Paths.get(inputFILENAME);
+		List<String> splitKey=Files.readAllLines(path);
+		char[] charKey;
+		if(splitKey.size()<=8){
+			charKey =new char[8];
+			splitKey.forEach(s->{
+				charKey[(int)(s.charAt(0)-97)]=s.charAt(2);
+			});
+		}
+		else{
+			charKey =new char[52];
+			splitKey.forEach(s->{
+				if((int)(s.charAt(0))>=97)
+					charKey[(int)(s.charAt(0))-97]=s.charAt(2);
+				else
+				charKey[(int)(s.charAt(0))+26-65]=s.charAt(2);
+			});
 		}
 		return new String(charKey);
+	}
+	public String printKey(String key, String outKey) {
+		for(int i=0;i<key.length();i++){
+			if(i==key.length()-1)
+				outKey=outKey+(char)(i+97)+" "+key.charAt(i);
+			else
+			outKey=outKey+(char)(i+97)+" "+key.charAt(i)+"\n";
+		}
+		return outKey;
 	}
 	public void writeToFile(String outputFILENAME,String text) {
 		try{
 		    PrintWriter writer = new PrintWriter(outputFILENAME, "UTF-8");
 		    writer.print(text);
 		    writer.close();
-		} catch (IOException e) {
-		   // do something
-		}
-		
+		} catch (IOException e) {}
 	}
 }

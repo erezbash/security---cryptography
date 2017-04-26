@@ -16,28 +16,28 @@ public class CBC {
 	int blockCrackSize;
 	Printer p ;
 	Set<String> dictionary; 
-	public CBC(int blocksize,Set<String> dic) throws IOException{
-		 BLOCKSIZE=blocksize;
+	public CBC(Set<String> dic) throws IOException{
 		 p  = new Printer();
-		//dictionary = p.readDic();
 		 dictionary=dic;
 	}
 	
 	public String encrypt(byte[] text,String iv,String k){
+		if(k.length()>8)
+			BLOCKSIZE=8128;
 		encryptInit(text,iv,k);
 		myTable = new Table(Key);
 		int startIndex=0;
 		byte[] chiperTextBlock;
-		byte[] plaintTextBlocks =  new byte[10];
+		byte[] plaintTextBlocks =  new byte[BLOCKSIZE];
 		System.arraycopy(this.plaintText,startIndex,plaintTextBlocks,0,BLOCKSIZE);
 		chiperTextBlock = helperEync(plaintTextBlocks,initVector);
 		System.arraycopy(chiperTextBlock,0,cipherText,startIndex,BLOCKSIZE);
-		startIndex=startIndex+10;
-		while((startIndex+10)<=plaintText.length){
+		startIndex=startIndex+BLOCKSIZE;
+		while((startIndex+BLOCKSIZE)<=plaintText.length){
 			System.arraycopy(plaintText,startIndex,plaintTextBlocks,0,BLOCKSIZE);
 			chiperTextBlock = helperEync(plaintTextBlocks,chiperTextBlock);
 			System.arraycopy(chiperTextBlock,0,cipherText,startIndex,BLOCKSIZE);
-			startIndex=startIndex+10;
+			startIndex=startIndex+BLOCKSIZE;
 		}
 		if(startIndex<plaintText.length){
 			System.arraycopy(plaintText,startIndex,plaintTextBlocks,0,plaintText.length-startIndex);
@@ -54,8 +54,8 @@ public class CBC {
 		plaintText = a;
 		initVector = b.getBytes(Charset.forName("UTF-8"));
 		Key = c.getBytes(Charset.forName("UTF-8"));;
-		if(plaintText.length%10!=0)
-			cipherText = new byte[(plaintText.length/10)*10+10];
+		if(plaintText.length%BLOCKSIZE!=0)
+			cipherText = new byte[(plaintText.length/BLOCKSIZE)*BLOCKSIZE+BLOCKSIZE];
 		else
 			cipherText = new byte[plaintText.length];
 	}
@@ -74,25 +74,27 @@ public class CBC {
 	}
 	
 	public String decrypt(byte[] chiper,String iv,String k){
+		if(k.length()>8)
+			BLOCKSIZE=8128;
 		decryptText = new byte[chiper.length];
 		initVector = iv.getBytes(Charset.forName("UTF-8"));
 		Key=k.getBytes(Charset.forName("UTF-8"));;
 		myTable = new Table(Key);
 		int startIndex=0;
 		byte[] toDecrypt=chiper;
-		byte[] chiperTextBlock0 = new byte[10];
-		byte[] chiperTextBlock1 = new byte[10];
-		byte[] plaintTextBlocks =  new byte[10];
+		byte[] chiperTextBlock0 = new byte[BLOCKSIZE];
+		byte[] chiperTextBlock1 = new byte[BLOCKSIZE];
+		byte[] plaintTextBlocks =  new byte[BLOCKSIZE];
 		System.arraycopy(toDecrypt,startIndex,chiperTextBlock0,0,BLOCKSIZE);
 		plaintTextBlocks = helperDyc(chiperTextBlock0,initVector);
 		System.arraycopy(plaintTextBlocks,0,decryptText,startIndex,BLOCKSIZE);
-		startIndex=startIndex+10;
-		while((startIndex+10)<=toDecrypt.length){
+		startIndex=startIndex+BLOCKSIZE;
+		while((startIndex+BLOCKSIZE)<=toDecrypt.length){
 			System.arraycopy(chiperTextBlock0,0,chiperTextBlock1,0,BLOCKSIZE);
 			System.arraycopy(toDecrypt,startIndex,chiperTextBlock0,0,BLOCKSIZE);
 			plaintTextBlocks = helperDyc(chiperTextBlock0,chiperTextBlock1);
 			System.arraycopy(plaintTextBlocks,0,decryptText,startIndex,BLOCKSIZE);
-			startIndex=startIndex+10;
+			startIndex=startIndex+BLOCKSIZE;
 		}
 		return  new String(decryptText);
 	}
@@ -132,8 +134,8 @@ public class CBC {
 		System.arraycopy(toDecrypt,startIndex,chiperTextBlock0,0,BLOCKSIZE);
 		plaintTextBlocks = helperDyc(chiperTextBlock0,initVector);
 		System.arraycopy(plaintTextBlocks,0,decryptText,startIndex,BLOCKSIZE);
-		startIndex=startIndex+10;
-		while((startIndex+10)<=toDecrypt.length){
+		startIndex=startIndex+BLOCKSIZE;
+		while((startIndex+BLOCKSIZE)<=toDecrypt.length){
 			System.arraycopy(chiperTextBlock0,0,chiperTextBlock1,0,BLOCKSIZE);
 			System.arraycopy(toDecrypt,startIndex,chiperTextBlock0,0,BLOCKSIZE);
 			plaintTextBlocks = helperDyc(chiperTextBlock0,chiperTextBlock1);
@@ -142,7 +144,7 @@ public class CBC {
 				return cehckIfNotCracked(decryptText);
 			}
 			System.arraycopy(plaintTextBlocks,0,decryptText,startIndex,BLOCKSIZE);
-			startIndex=startIndex+10;	
+			startIndex=startIndex+BLOCKSIZE;	
 		}
 
 		return cehckIfNotCracked(decryptText);
