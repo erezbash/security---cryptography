@@ -73,4 +73,11 @@ public class Test_CBC extends TestCase {
 		String res=myCBC.decrypt(chiperText52, iv52, key52);
 		assertEquals(res, new String(plaintText52));
 	}
+	@Test
+	public void testKnownText52() throws IOException {
+		Attack a= new Attack();
+		String key=a.knownTextAttack(chiperText52,plaintText52,chiperText52,iv52);
+		assertEquals(key52,key);
+	}
+
 }

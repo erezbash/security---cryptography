@@ -37,7 +37,7 @@ public class App {
     		 output=args[9];	
     		long startTime = System.nanoTime();
     		 attack = new Attack();
-    		 key=attack.crack(text,iv);
+    		 key=attack.chipherTextAttack(text,iv);
     		String outKey="";
     		outKey = myPrinter.printKey(key, outKey);
     	    myPrinter.writeToFile(output, outKey);

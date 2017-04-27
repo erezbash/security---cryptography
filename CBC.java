@@ -2,7 +2,9 @@ package security;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 public class CBC {
 	
 	private int BLOCKSIZE=10;
@@ -39,25 +41,30 @@ public class CBC {
 			System.arraycopy(chiperTextBlock,0,cipherText,startIndex,BLOCKSIZE);
 			startIndex=startIndex+BLOCKSIZE;
 		}
-		if(startIndex<plaintText.length){
-			System.arraycopy(plaintText,startIndex,plaintTextBlocks,0,plaintText.length-startIndex);
-			for(int i=plaintText.length-startIndex;i<BLOCKSIZE;i++){
-				plaintTextBlocks[i]=0;
-			}
-			chiperTextBlock = helperEync(plaintTextBlocks,chiperTextBlock);
-			System.arraycopy(chiperTextBlock,0,cipherText,startIndex,BLOCKSIZE);
-		}
 		return  new String(cipherText);
 	}
 
 	private void encryptInit(byte[] a,String b,String c){
-		plaintText = a;
+		plaintText =a;
 		initVector = b.getBytes(Charset.forName("UTF-8"));
 		Key = c.getBytes(Charset.forName("UTF-8"));;
 		if(plaintText.length%BLOCKSIZE!=0)
 			cipherText = new byte[(plaintText.length/BLOCKSIZE)*BLOCKSIZE+BLOCKSIZE];
 		else
 			cipherText = new byte[plaintText.length];
+		plaintText = padding(BLOCKSIZE,a);
+	}
+	private byte[] padding(int blockSize,byte[] chars){
+		int bufferSize;
+		if(chars.length%BLOCKSIZE!=0)
+			bufferSize=(chars.length/blockSize)*blockSize+blockSize;
+		else
+			bufferSize=chars.length;
+		byte[] result = new byte[bufferSize];
+		System.arraycopy(chars,0,result,0,chars.length);
+		for(int i=chars.length;i<bufferSize;i++)
+			result[i]=0;
+		return result;
 	}
 	
 
@@ -124,7 +131,7 @@ public class CBC {
 		blockCrackSize=35000;
 		decryptText = new byte[chiper.length];
 		initVector = iv.getBytes(Charset.forName("UTF-8"));
-		Key=k.getBytes(Charset.forName("UTF-8"));;
+		Key=k.getBytes(Charset.forName("UTF-8"));
 		myTable = new Table(Key);
 		int startIndex=0;
 		byte[] toDecrypt=chiper;
@@ -167,4 +174,41 @@ public class CBC {
 
 		return goods;
 	}
+	public byte[] knownTextAttack(byte[] chiper,byte[] knownCipher,byte[] knownText,byte[] iv){
+		BLOCKSIZE=8128;
+		byte[] Key = new byte[52];
+		byte[] afterXor = new byte[BLOCKSIZE];
+		afterXor = xor(iv,padding(BLOCKSIZE,knownText));
+		Key=extractKey(afterXor,knownCipher,Key);
+		return Key;
+	}
+	private byte[] extractKey(byte[] afterXor, byte[] chiperBlocks, byte[] key) {
+		char[] temp ={'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'};
+		shuffleArray(temp);shuffleArray(temp);shuffleArray(temp);shuffleArray(temp);shuffleArray(temp);shuffleArray(temp);
+		for(int i=0;i<key.length;i++)
+			key[i]=(byte)temp[i];
+		for(int i=0;i<afterXor.length;i++){
+			int c=(int)afterXor[i];
+			if(c>96 && c<123){
+				key[c-97]=chiperBlocks[i];
+			}
+			else if(c>64 && c<91){
+				key[c-65+26]=chiperBlocks[i];
+			}
+		}
+		return key;
+	}
+	private void shuffleArray(char[] ar)
+	  {
+	    // If running on Java 6 or older, use `new Random()` on RHS here
+	    Random rnd = ThreadLocalRandom.current();
+	    for (int i = ar.length - 1; i > 0; i--)
+	    {
+	      int index = rnd.nextInt(i + 1);
+	      // Simple swap
+	      char a = ar[index];
+	      ar[index] = ar[i];
+	      ar[i] = a;
+	    }
+	  }
 }

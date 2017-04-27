@@ -1,6 +1,7 @@
 package security;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -35,7 +36,7 @@ public class Attack {
         }
     }
     
-	public String crack(byte[] cipher,String iv) throws IOException{
+	public String chipherTextAttack(byte[] cipher,String iv) throws IOException{
 		 best=0;
         int n = 8;
         Set<String> dictionary=p.readDictionary();
@@ -51,6 +52,10 @@ public class Attack {
 			}
 			});
 		return bestKey;
+	}
+	public String knownTextAttack(byte[] chiper,byte[] knownText,byte[] knowwnCipher,String iv) throws IOException{
+		myCBC= new CBC(null);
+		return new String(myCBC.knownTextAttack(chiper,knowwnCipher,knownText,iv.getBytes(Charset.forName("UTF-8"))));
 	}
 	private void checkForMe(Key key) {
 		if(key.cur>best){
