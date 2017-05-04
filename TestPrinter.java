@@ -24,6 +24,12 @@ public class TestPrinter extends TestCase {
 		String key = myPrinter.readKey(key3);
 		assertEquals(key,"HITcbmgFRxCQEvoljWdrYAKOPwyMtzLBahSVZJNskXpuUGqfnDei");
 	}
+	public void testPrintKey(){
+		String key="ytMLzaBShZVNJkspXUuqGnfeDiHTIbcgmRFCxEQovjldWYrKAPOw";
+		String outkey="";
+		outkey=myPrinter.printKey1(key, outkey);
+		System.out.println(outkey);
+	}
 
 
 }

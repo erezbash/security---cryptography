@@ -174,7 +174,7 @@ public class CBC {
 
 		return goods;
 	}
-	public byte[] knownTextAttack(byte[] chiper,byte[] knownCipher,byte[] knownText,byte[] iv){
+	public byte[] knownTextAttack(byte[] knownCipher,byte[] knownText,byte[] iv){
 		BLOCKSIZE=8128;
 		byte[] Key = new byte[52];
 		byte[] afterXor = new byte[BLOCKSIZE];

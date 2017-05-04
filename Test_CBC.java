@@ -76,7 +76,7 @@ public class Test_CBC extends TestCase {
 	@Test
 	public void testKnownText52() throws IOException {
 		Attack a= new Attack();
-		String key=a.knownTextAttack(chiperText52,plaintText52,chiperText52,iv52);
+		String key=a.knownTextAttack(plaintText52,chiperText52,iv52);
 		assertEquals(key52,key);
 	}
 

@@ -53,9 +53,9 @@ public class Attack {
 			});
 		return bestKey;
 	}
-	public String knownTextAttack(byte[] chiper,byte[] knownText,byte[] knowwnCipher,String iv) throws IOException{
+	public String knownTextAttack(byte[] knownText,byte[] knowwnCipher,String iv) throws IOException{
 		myCBC= new CBC(null);
-		return new String(myCBC.knownTextAttack(chiper,knowwnCipher,knownText,iv.getBytes(Charset.forName("UTF-8"))));
+		return new String(myCBC.knownTextAttack(knowwnCipher,knownText,iv.getBytes(Charset.forName("UTF-8"))));
 	}
 	private void checkForMe(Key key) {
 		if(key.cur>best){

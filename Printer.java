@@ -56,6 +56,19 @@ public class Printer {
 		}
 		return outKey;
 	}
+	public String printKey1(String key, String outKey) {
+		for(int i=0;i<key.length();i++){
+			if(i>25){
+				if(i==key.length()-1)
+					outKey=outKey+(char)(i+97-26)+" "+key.charAt(i);
+				else
+					outKey=outKey+(char)(i+97-26)+" "+key.charAt(i)+"\n";
+				continue;
+			}
+			outKey=outKey+(char)(i+65)+" "+key.charAt(i)+"\n";
+		}
+		return outKey;
+	}
 	public void writeToFile(String outputFILENAME,String text) {
 		try{
 		    PrintWriter writer = new PrintWriter(outputFILENAME, "UTF-8");

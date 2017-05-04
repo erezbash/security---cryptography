@@ -75,33 +75,30 @@ public class TestAttack extends TestCase {
 	
 	public void testknownTextAttack1() throws IOException{
 		String key;
-		byte[] _cipher=myPrinter.fileToBytes(cipher1);
 		byte[] _knownText=myPrinter.fileToBytes(knownText);
 		byte[] _knowwnCipher=myPrinter.fileToBytes(knownCipher);
 		String _iv=new String(myPrinter.fileToBytes(ivFileName));
 		String _key = myPrinter.readKey(longKeyFileName);
-		key=myAttack.knownTextAttack(_cipher,_knownText,_knowwnCipher,_iv);
+		key=myAttack.knownTextAttack(_knownText,_knowwnCipher,_iv);
 		assertEquals(key,_key);
 	}
 	
 	public void testknownTextAttack2() throws IOException{
 		String key;
-		byte[] _cipher=myPrinter.fileToBytes(cipher15);
 		byte[] _knownText=myPrinter.fileToBytes(knownText5);
 		byte[] _knowwnCipher=myPrinter.fileToBytes(knownCipher5);
 		String _iv=new String(myPrinter.fileToBytes(ivFileName5));
 		String _key = myPrinter.readKey(longKeyFileName5);
-		key=myAttack.knownTextAttack(_cipher,_knownText,_knowwnCipher,_iv);
+		key=myAttack.knownTextAttack(_knownText,_knowwnCipher,_iv);
 		assertEquals(key,_key);
 	}
 	public void testknownTextAttack3() throws IOException{
 		String key;
-		byte[] _cipher=myPrinter.fileToBytes(cipher16);
 		byte[] _knownText=myPrinter.fileToBytes(knownText6);
 		byte[] _knowwnCipher=myPrinter.fileToBytes(knownCipher6);
 		String _iv=new String(myPrinter.fileToBytes(ivFileName6));
 		String _key = myPrinter.readKey(longKeyFileName6);
-		key=myAttack.knownTextAttack(_cipher,_knownText,_knowwnCipher,_iv);
+		key=myAttack.knownTextAttack(_knownText,_knowwnCipher,_iv);
 		int ok=0;
 		for(int i=0;i<key.length();i++){
 			if(key.charAt(i)==_key.charAt(i))
