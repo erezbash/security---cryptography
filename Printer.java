@@ -20,7 +20,7 @@ public class Printer {
 	}
 	public 	Set<String> readDictionary() throws IOException{
 		Set<String> dictionary = new HashSet<String>(10000);
-		Path path = Paths.get("src/security/words.txt");
+		Path path = Paths.get("security/words.txt");
 		List<String> data = Files.readAllLines(path);
 		for(String s: data)
 		dictionary.add(s.trim());
@@ -47,6 +47,7 @@ public class Printer {
 		}
 		return new String(charKey);
 	}
+	
 	public String printKey(String key, String outKey) {
 		for(int i=0;i<key.length();i++){
 			if(i==key.length()-1)
