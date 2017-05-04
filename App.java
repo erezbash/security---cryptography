@@ -25,24 +25,24 @@ public class App {
 		String kp="";
 		
   		for(int i=0;i<args.length-1;i++){
-  			if(args[i]=="-a")
+  			if(args[i].equals("-a"))
   				a=args[i+1];
-  			else if(args[i]=="-c")
+  			else if(args[i].equals("-c"))
   				c=args[i+1];
-  			else if(args[i]=="-t")
+  			else if(args[i].equals("-t"))
   				t=args[i+1];
-  			else if(args[i]=="-k")
+  			else if(args[i].equals("-k"))
   				k=args[i+1];
-  			else if(args[i]=="-v")
+  			else if(args[i].equals("-v"))
   				v=args[i+1];
-  			else if(args[i]=="-o")
+  			else if(args[i].equals("-o"))
   				o=args[i+1];
-  			else if(args[i]=="-kc")
+  			else if(args[i].equals("-kc"))
   				kc=args[i+1];
-  			else if(args[i]=="-kp")
+  			else if(args[i].equals("-kp"))
   				kp=args[i+1];
   		}
-  		
+
 		firstFileRead=myPrinter.fileToBytes(t);
  		String iv=myPrinter.fileToString(v);
 

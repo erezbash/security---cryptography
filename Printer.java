@@ -26,14 +26,11 @@ public class Printer {
 	private  Set<String> WordsToSet(String path) throws IOException {
 		Set<String> words = new HashSet<String>();
 		InputStream input =  getClass().getResourceAsStream(path);
-		InputStreamReader r = new InputStreamReader(input);
-		BufferedReader br = new BufferedReader(r);
-			
+		BufferedReader br = new BufferedReader(new InputStreamReader(input));
 		String wordInEnglish = "";
 		while ((wordInEnglish = br.readLine()) != null) {
 			words.add(wordInEnglish);
 		}
-
 		return words;
 	}
 	public 	Set<String> readDictionary() throws IOException{
