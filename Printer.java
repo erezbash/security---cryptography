@@ -1,4 +1,5 @@
 package security;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
@@ -6,6 +7,10 @@ import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
+
 import java.nio.file.Path;
 
 public class Printer {
@@ -18,11 +23,26 @@ public class Printer {
 		byte[] data = Files.readAllBytes(path);
 		return data;
 	}
+	private  Set<String> WordsToSet(String path) throws IOException {
+		Set<String> words = new HashSet<String>();
+		InputStream input =  getClass().getResourceAsStream(path);
+		InputStreamReader r = new InputStreamReader(input);
+		BufferedReader br = new BufferedReader(r);
+			
+		String wordInEnglish = "";
+		while ((wordInEnglish = br.readLine()) != null) {
+			words.add(wordInEnglish);
+		}
+
+		return words;
+	}
 	public 	Set<String> readDictionary() throws IOException{
 		Set<String> dictionary = new HashSet<String>(10000);
-		Path path = Paths.get("security/words.txt");
-		List<String> data = Files.readAllLines(path);
-		for(String s: data)
+//		Path path = Paths.get("security/words.txt");
+//		List<String> data = Files.readAllLines(path);
+//		
+		Set<String> temp = WordsToSet("words.txt");
+		for(String s: temp)
 		dictionary.add(s.trim());
 		return dictionary;
 	}
